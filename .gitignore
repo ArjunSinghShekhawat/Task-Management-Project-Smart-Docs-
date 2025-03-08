@@ -1,0 +1,63 @@
+# Java / Maven / Gradle
+*.class
+*.jar
+*.war
+*.ear
+target/
+build/
+
+# Eclipse
+.idea/
+*.iml
+*.ipr
+*.iws
+*.class
+*.jar
+*.war
+*.ear
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# NetBeans
+nbproject/private/
+
+# Spring Boot specific
+logs/
+*.log
+*.pid
+
+# Maven wrapper
+.mvn/wrapper/
+
+# Gradle wrapper
+gradle-wrapper.jar
+.gradle/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Java local settings
+*.swp
+*.swo
+
+# JetBrains Rider (IDE)
+.idea/
+
+# Build tools
+.gradle/
+
+# Application-specific
+application.properties
+application.yml
+
+# Jupyter notebooks (if applicable)
+.ipynb_checkpoints/
