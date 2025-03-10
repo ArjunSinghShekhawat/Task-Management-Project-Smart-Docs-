@@ -7,6 +7,11 @@ import com.arjun.request.LoginRequest;
 import com.arjun.request.SignUpRequest;
 import com.arjun.responce.AuthResponse;
 import com.arjun.services.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +23,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Authentication", description = "APIs for user authentication and registration")
 public class AuthController {
 
     private final AuthService authService;
 
 
+    @Operation(
+            summary = "User Sign-Up",
+            description = "Registers a new user with the provided details. Returns the created user information."
+    )
+    @ApiResponse(responseCode = "201", description = "User registered successfully",
+            content = @Content(schema = @Schema(implementation = UserDto.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid request data")
+    @ApiResponse(responseCode = "409", description = "User already exists")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
     @PostMapping("/sign-up")
     public ResponseEntity<UserDto> signUpHandler(@Valid @RequestBody SignUpRequest request) {
         try {
@@ -44,6 +59,14 @@ public class AuthController {
         }
     }
 
+    @Operation(
+            summary = "User Sign-In",
+            description = "Authenticates a user with their credentials and returns a JWT token if successful."
+    )
+    @ApiResponse(responseCode = "200", description = "Login successful",
+            content = @Content(schema = @Schema(implementation = AuthResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid credentials")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
     @PostMapping("/sign-in")
     public ResponseEntity<AuthResponse>loginHandler(@Valid  @RequestBody LoginRequest request){
         log.info("Attempting to sign in user with email: {}", request.getEmail());
