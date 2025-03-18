@@ -14,6 +14,7 @@ import com.arjun.request.SignUpRequest;
 import com.arjun.responce.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -40,8 +42,9 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final AddressRepository addressRepository;
+    private final EmailFetchService emailFetchService;
 
-    public UserDto signUp(SignUpRequest request) throws UserAlreadyExistsException {
+    public AuthResponse signUp(SignUpRequest request) throws UserAlreadyExistsException {
 
         User existUser = userRepository.findByEmail(request.getEmail());
         if(existUser!=null){
@@ -56,6 +59,9 @@ public class AuthService {
         user.setEmail(request.getEmail().trim());
         user.setRole(request.getRole());
         user.setPassword(passwordEncoder.encode(request.getPassword().trim()));
+        user.setRegistrationDate(new Date());
+        user.setImageUrl(String.format("https://api.dicebear.com/5.x/initials/svg?seed=%s %s", request.getFirstName(),request.getLastName()));
+
 
         //Create address associate for user
         Address address = new Address();
@@ -75,7 +81,15 @@ public class AuthService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(request.getEmail(),null,authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return savedUser;
+        String jwt = jwtProvider.generateToken(authentication);
+
+        AuthResponse response = new AuthResponse();
+        response.setStatus(true);
+        response.setJwt(jwt);
+        response.setMessage("SignUp Successfully");
+        response.setRole(savedUser.getRole());
+
+        return response;
     }
     public AuthResponse signIn(LoginRequest request) throws UserException {
 
@@ -150,5 +164,12 @@ public class AuthService {
             // Default to USER role if no role is found
             authResponse.setRole(ROLE.USER);
         }
+    }
+
+    public boolean sendEmailToUser(String email){
+        boolean b = this.emailFetchService.sendMail(email, "Funny", "Checking purpose");
+
+        System.out.println("Email Send "+b);
+        return b;
     }
 }

@@ -39,17 +39,18 @@ public class AuthController {
     @ApiResponse(responseCode = "409", description = "User already exists")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     @PostMapping("/sign-up")
-    public ResponseEntity<UserDto> signUpHandler(@Valid @RequestBody SignUpRequest request) {
+    public ResponseEntity<AuthResponse> signUpHandler(@Valid @RequestBody SignUpRequest request) {
         try {
             // Attempt to sign up the user and retrieve the saved UserDto
-            UserDto savedUser = authService.signUp(request);
+            AuthResponse response = authService.signUp(request);
 
             // If savedUser is null, indicating failure, return BAD_REQUEST
-            if (savedUser == null) {
+            if (response == null) {
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
             }
+            AuthResponse authResponse = new AuthResponse();
             // Successfully created the user, return CREATED status
-            return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (UserAlreadyExistsException e) {
             // Specific exception handling if the user already exists
             return new ResponseEntity<>(null, HttpStatus.CONFLICT); // Conflict status if user already exists
@@ -87,5 +88,10 @@ public class AuthController {
             log.error("An error occurred during sign-in attempt for username: {}", request.getEmail(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @GetMapping
+    public ResponseEntity<Boolean>getEmailStatement(@RequestBody String email){
+        boolean b = authService.sendEmailToUser(email);
+        return new ResponseEntity<>(b,HttpStatus.OK);
     }
 }

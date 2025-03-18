@@ -9,10 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/user")
@@ -40,6 +41,7 @@ public class UserController {
             @RequestHeader("Authorization") String jwt,
             @RequestBody UserDto userDto) throws UserException {
         try {
+            System.out.println(userDto+" "+jwt);
             UserDto updatedUser = userService.updateUser(jwt, userDto);
             if (updatedUser == null) {
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
@@ -69,7 +71,6 @@ public class UserController {
         }
         return new ResponseEntity<>(new AuthResponse("User Not Found Successfully",false,null,null),HttpStatus.NOT_FOUND);
     }
-
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the user."),
             @ApiResponse(responseCode = "404", description = "Not found - The user not found."),
@@ -79,7 +80,7 @@ public class UserController {
             description = "Fetch a user"
     )
     @GetMapping
-    public ResponseEntity<UserDto>getUserHandler(@RequestHeader("Authorization") String jwt) throws UserException {
+    public ResponseEntity<UserDto> getUserHandler(@RequestHeader("Authorization") String jwt) throws UserException {
 
         UserDto user = userService.getUser(jwt);
         if(user==null){

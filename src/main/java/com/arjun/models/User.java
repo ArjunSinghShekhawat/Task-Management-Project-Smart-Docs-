@@ -10,6 +10,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Document
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,6 +30,10 @@ public class User {
     private String email;
 
     private ROLE role;
+
+    private Date registrationDate;
+
+    private String imageUrl;
 
     @DBRef
     private Address address;

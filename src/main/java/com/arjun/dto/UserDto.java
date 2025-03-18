@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,5 +17,7 @@ public class UserDto {
     private String lastName;
     private String email;
     private ROLE role;
+    private Date registrationDate;
     private AddressDto address;
+    private String imageUrl;
 }
