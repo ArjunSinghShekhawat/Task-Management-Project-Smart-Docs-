@@ -14,7 +14,6 @@ import com.arjun.request.SignUpRequest;
 import com.arjun.responce.AuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,7 +41,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final AddressRepository addressRepository;
-    private final EmailFetchService emailFetchService;
+    private final EmailService emailFetchService;
 
     public AuthResponse signUp(SignUpRequest request) throws UserAlreadyExistsException {
 
@@ -164,12 +163,5 @@ public class AuthService {
             // Default to USER role if no role is found
             authResponse.setRole(ROLE.USER);
         }
-    }
-
-    public boolean sendEmailToUser(String email){
-        boolean b = this.emailFetchService.sendMail(email, "Funny", "Checking purpose");
-
-        System.out.println("Email Send "+b);
-        return b;
     }
 }

@@ -89,9 +89,4 @@ public class AuthController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping
-    public ResponseEntity<Boolean>getEmailStatement(@RequestBody String email){
-        boolean b = authService.sendEmailToUser(email);
-        return new ResponseEntity<>(b,HttpStatus.OK);
-    }
 }
